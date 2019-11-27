@@ -1,0 +1,21 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: fortunepod
+  namespace: myns
+  labels:
+    name: fortune
+    version: v1
+spec:
+  containers:
+  - name: fortune-container
+    image: twee1990/myfortuneapp:v0.0.2
+    imagePullPolicy: Always
+    env:
+    - name: APP_PORT
+      value: "3000"
+    ports:
+    - name: http
+      containerPort: 3000
+      # kubectl port-forward po/fortunepod 8080:3000 -n myns

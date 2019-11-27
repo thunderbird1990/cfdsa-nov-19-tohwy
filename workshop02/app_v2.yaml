@@ -1,0 +1,63 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nwapp-deploy
+  namespace: mynwns
+  labels:
+    app.kubernetes.io/name: nwapp-deploy
+    app.kubernetes.io/version: v1
+    app.kubernetes.io/component: application
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      name: nwapp-pod
+      version: v1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      name: nwapp-pod
+      labels:
+        name: nwapp-pod
+        version: v1
+    spec:
+      containers:
+      - name: nwapp
+        image: stackupiss/northwind-app:v2
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: nwapp-port
+          timeoutSeconds: 5
+          failureThreshold: 3
+          successThreshold: 1
+        env:
+        - name: DB_PASSWORD
+          valueFrom: 
+            secretKeyRef:
+              name: nwapp-secret
+              key: db_password
+        - name: DB_HOST
+          valueFrom: 
+            configMapKeyRef:
+              name: nwapp-config
+              key: db_host
+        - name: DB_USER
+          valueFrom: 
+            configMapKeyRef:
+              name: nwapp-config
+              key: db_user
+        - name: INSTANCE_IP_ADDRESS
+          valueFrom:
+            fieldRef: 
+              apiVersion: v1
+              fieldPath: status.hostIP
+        ports:
+        - name: nwapp-port
+          containerPort: 3000
