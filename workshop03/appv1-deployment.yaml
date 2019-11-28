@@ -1,0 +1,47 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+
+metadata:
+  name: appv1-deployment
+  namespace: myns
+
+spec:
+  replicas: 2
+  template:
+    metadata:
+      name: myappv1
+      labels:
+        name: myapp
+        version: v1
+    spec:
+      containers:
+      - name: myappv1-container
+        image: twee1990/mynorthwindapp:v0.0.2
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: "20m"
+            memory: "55M"
+          limits:
+            cpu: "40m"
+            memory: "110M"
+        env:
+        - name: DB_HOST
+          value: mydb-svc # mydb-svc.myns.svc.cluster.local
+        - name: DB_PORT
+          value: "3306"
+        - name: DB_USER
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: db_user
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: app-secret
+              key: db_password
+        ports:
+        - name: myapp-port
+          containerPort: 3000
+      restartPolicy: Always

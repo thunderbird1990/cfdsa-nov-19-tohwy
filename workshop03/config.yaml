@@ -1,0 +1,28 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: myns
+  labels:
+    version: v1
+---
+apiVersion: v1
+kind: Secret
+
+metadata:
+  name: app-secret
+  namespace: myns
+
+data:
+  db_password: bXlud3Bhc3M=
+---
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: app-config
+  namespace: myns
+
+data:
+  db_name: northwind
+  db_user: root
