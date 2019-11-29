@@ -9,14 +9,14 @@ spec:
   hosts:
   - "*"
   gateways:
-  - weather-ingress # fortune-ingress.default.svc.cluster.local
+  - weather-ingress # weather-ingress.default.svc.cluster.local
   http:
   - match:
     - uri:
         prefix: /weather
     route:
     - destination:
-        host: weatherapp-svc # fortuneapp-svc.default.svc.cluster.local
+        host: weatherapp-svc # weatherapp-svc.default.svc.cluster.local
         port: 
           number: 80
   - match:
@@ -24,6 +24,6 @@ spec:
         exact: /
     route:
     - destination:
-        host: weatherapp-svc # fortuneapp-svc.default.svc.cluster.local
+        host: weatherapp-svc # weatherapp-svc.default.svc.cluster.local
         port: 
           number: 80
